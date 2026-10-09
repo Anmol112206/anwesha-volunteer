@@ -1,0 +1,189 @@
+// =============================================================================
+// Event Service — API client for all event operations
+// Calls our Next.js API proxy routes which forward to the real backend.
+// =============================================================================
+
+import type {
+  Event,
+  EventFormData,
+  EventsListResponse,
+  EventDetailResponse,
+  AnalyticsResponse,
+  PosterUploadUrlResponse,
+  PosterViewResponse,
+} from '@/types/events';
+
+const BASE = '/api/admin/events';
+
+// ---------------------------------------------------------------------------
+// List Events
+// ---------------------------------------------------------------------------
+// List Events (Regular)
+// ---------------------------------------------------------------------------
+export async function fetchEvents(params?: {
+  tag?: string;
+  status?: string;
+  search?: string;
+}): Promise<EventsListResponse> {
+  const sp = new URLSearchParams();
+  if (params?.tag) sp.set('tag', params.tag);
+  if (params?.status) sp.set('status', params.status);
+  if (params?.search) sp.set('search', params.search);
+
+  const url = sp.toString() ? `${BASE}?${sp.toString()}` : BASE;
+  const res = await fetch(url, { cache: 'no-store' });
+  if (!res.ok) throw new Error('Failed to fetch events');
+  return res.json();
+}
+
+// ---------------------------------------------------------------------------
+// List Special Events (Fest Pass, Garba, Pronites, etc.)
+// ---------------------------------------------------------------------------
+export async function fetchSpecialEvents(params?: {
+  type?: string;
+  active_only?: boolean;
+}): Promise<EventsListResponse> {
+  const sp = new URLSearchParams();
+  if (params?.type && params.type !== 'ALL') sp.set('type', params.type);
+  if (params?.active_only !== undefined) sp.set('active_only', String(params.active_only));
+
+  const url = sp.toString() ? `${BASE}/special?${sp.toString()}` : `${BASE}/special`;
+  const res = await fetch(url, { cache: 'no-store' });
+  if (!res.ok) throw new Error('Failed to fetch special events');
+  return res.json();
+}
+
+// ---------------------------------------------------------------------------
+// Get Single Event
+// ---------------------------------------------------------------------------
+export async function fetchEvent(eventId: string): Promise<EventDetailResponse> {
+  const res = await fetch(`${BASE}/${encodeURIComponent(eventId)}`, { cache: 'no-store' });
+  if (!res.ok) throw new Error('Failed to fetch event');
+  return res.json();
+}
+
+// ---------------------------------------------------------------------------
+// Create Event
+// ---------------------------------------------------------------------------
+export async function createEvent(data: Partial<EventFormData>): Promise<EventDetailResponse> {
+  const res = await fetch(BASE, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error('Failed to create event');
+  return res.json();
+}
+
+// ---------------------------------------------------------------------------
+// Update Event
+// ---------------------------------------------------------------------------
+export async function updateEvent(
+  eventId: string,
+  data: Partial<EventFormData>
+): Promise<EventDetailResponse> {
+  const res = await fetch(`${BASE}/${encodeURIComponent(eventId)}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error('Failed to update event');
+  return res.json();
+}
+
+// ---------------------------------------------------------------------------
+// Delete Event
+// ---------------------------------------------------------------------------
+export async function deleteEvent(eventId: string): Promise<{ success: boolean }> {
+  const res = await fetch(`${BASE}/${encodeURIComponent(eventId)}`, { method: 'DELETE' });
+  if (!res.ok) throw new Error('Failed to delete event');
+  return res.json();
+}
+
+// ---------------------------------------------------------------------------
+// Fetch Analytics
+// ---------------------------------------------------------------------------
+export async function fetchAnalytics(): Promise<AnalyticsResponse> {
+  const res = await fetch(`${BASE}/analytics`, { cache: 'no-store' });
+  if (!res.ok) throw new Error('Failed to fetch analytics');
+  return res.json();
+}
+
+// ---------------------------------------------------------------------------
+// S3 Poster Upload Flow (3-step)
+// ---------------------------------------------------------------------------
+
+/** Step 1: Get presigned upload URL from backend */
+export async function getPosterUploadUrl(
+  eventId: string,
+  fileName: string,
+  contentType: string
+): Promise<PosterUploadUrlResponse> {
+  const sp = new URLSearchParams({ fileName, contentType });
+  const res = await fetch(`${BASE}/${encodeURIComponent(eventId)}/poster/upload-url?${sp.toString()}`);
+  if (!res.ok) throw new Error('Failed to get upload URL');
+  return res.json();
+}
+
+/** Step 2: Upload file directly to S3 presigned URL */
+export async function uploadPosterToS3(uploadUrl: string, file: File): Promise<void> {
+  const res = await fetch(uploadUrl, {
+    method: 'PUT',
+    headers: { 'Content-Type': file.type },
+    body: file,
+  });
+  if (!res.ok) throw new Error('Failed to upload poster to S3');
+}
+
+/** Step 3: Confirm upload in backend (saves fileKey to event record) */
+export async function confirmPosterUpload(
+  eventId: string,
+  fileKey: string
+): Promise<{ success: boolean }> {
+  const res = await fetch(`${BASE}/${encodeURIComponent(eventId)}/poster`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ fileKey }),
+  });
+  if (!res.ok) throw new Error('Failed to confirm poster upload');
+  return res.json();
+}
+
+/** Get poster viewing URL */
+export async function getEventPosterUrl(eventId: string): Promise<PosterViewResponse> {
+  const res = await fetch(`${BASE}/${encodeURIComponent(eventId)}/poster`);
+  if (!res.ok) throw new Error('Failed to get poster URL');
+  return res.json();
+}
+
+export const parseOrganizers = (organizerInput?: any): [string, string][] => {
+  if (!organizerInput) return [];
+
+  // 1. Defensively force the input into a string. 
+  // If the backend returned a parsed Array/Object instead of a string, stringify it.
+  let cleanedString = typeof organizerInput === 'string' 
+    ? organizerInput 
+    : JSON.stringify(organizerInput);
+  
+  // 2. Clean up that weird legacy data format: ["Rahul","123"]:Organizer
+  const legacyRegex = /\[\\?"(.*?)\\?","\\?(.*?)\\?"\](?::"?Organizer"?)?/g;
+  if (legacyRegex.test(cleanedString)) {
+    cleanedString = cleanedString.replace(legacyRegex, "$1:$2");
+  }
+
+  // 3. Split by comma (to separate multiple organizers)
+  return cleanedString
+    .split(',')
+    .map((person) => {
+      // 4. Split by colon to separate Name and Phone
+      const parts = person.split(':');
+      
+      // Clean up any remaining rogue quotes or brackets
+      const name = (parts[0] || '').replace(/[\[\]"\\]/g, '').trim();
+      const phone = (parts.slice(1).join(':') || '').replace(/[\[\]"\\]/g, '').trim();
+
+      return [name, phone] as [string, string];
+    })
+    // Filter out any completely empty entries
+    .filter(([name, phone]) => name.length > 0 || phone.length > 0);
+};
