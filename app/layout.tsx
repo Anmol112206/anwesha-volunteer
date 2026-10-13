@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
@@ -12,7 +12,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Anwesha 2027 — Volunteer Portal",
   description: "Secure gate scanning and entry management for Anwesha 2027 volunteers.",
-  themeColor: "#050507",
+  themeColor: "#000000",
 };
 
 export default function RootLayout({
@@ -26,7 +26,7 @@ export default function RootLayout({
       className={`${inter.variable} h-full antialiased`}
       style={{ colorScheme: "dark" }}
     >
-      <body className="min-h-full flex flex-col bg-[#050507] text-white">
+      <body className="min-h-full flex flex-col bg-black text-white">
         <Providers>
           {children}
         </Providers>

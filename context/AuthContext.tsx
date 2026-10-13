@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useSession, signIn, signOut } from 'next-auth/react';
@@ -20,7 +20,7 @@ interface AuthContextType {
   isLoading: boolean;
   login: (email: string, password: string, callbackUrl?: string) => Promise<void>;
   logout: () => Promise<void>;
-  // Kept for backward compat — volunteer app is always dark
+  // Kept for backward compat â€” volunteer app is always dark
   isDarkMode: true;
   toggleTheme: () => void;
 }
@@ -108,12 +108,12 @@ export function AuthProvider({
 
   // Prevent flash before mount
   if (!mounted) {
-    return <div className="min-h-screen bg-[#050507]" />;
+    return <div className="min-h-screen bg-[#000000]" />;
   }
 
   return (
     <AuthContext.Provider value={value}>
-      <div className="min-h-screen bg-[#050507] text-white">
+      <div className="min-h-screen bg-[#000000] text-white">
         {children}
       </div>
     </AuthContext.Provider>
