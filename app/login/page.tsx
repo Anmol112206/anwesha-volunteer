@@ -151,14 +151,11 @@ function LoginContent() {
 
       {/* Main Login Card - Pure Black Aesthetic */}
       <div className="w-full max-w-md bg-[#0A0A0A] border border-neutral-800 rounded-2xl p-8 sm:p-10 shadow-2xl relative">
-        {/* Subtle top yellow accent bar */}
-        <div className="absolute top-0 left-8 right-8 h-[2px] bg-yellow-400" />
-
         {/* Header */}
         <div className="text-center mb-8">
-          <span className="inline-block text-[11px] font-mono font-bold tracking-[0.25em] text-yellow-400 uppercase mb-2">
-            Anwesha 2027
-          </span>
+          <div className="text-xl sm:text-2xl font-black tracking-widest text-yellow-400 uppercase mb-2">
+            ANWESHA 2027
+          </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
             Volunteer Portal
           </h1>
