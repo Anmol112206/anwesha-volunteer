@@ -32,6 +32,7 @@ import {
   ArrowUpRight,
   ArrowDownLeft,
 } from "lucide-react";
+import toast from "react-hot-toast";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -138,9 +139,10 @@ function StatusBadge({
   variant = "default",
 }: {
   children: React.ReactNode;
-  variant?: "emerald" | "rose" | "amber" | "violet" | "cyan" | "default" | "indigo";
+  variant?: "emerald" | "rose" | "amber" | "violet" | "cyan" | "default" | "indigo" | "sage";
 }) {
   const styles: Record<string, string> = {
+    sage: "bg-[#86A995]/15 text-[#86A995] border-[#86A995]/30 shadow-[0_0_12px_rgba(134,169,149,0.15)]",
     emerald: "bg-emerald-500/10 text-emerald-400 border-emerald-500/25 shadow-[0_0_12px_rgba(16,185,129,0.1)]",
     rose: "bg-rose-500/10 text-rose-400 border-rose-500/25 shadow-[0_0_12px_rgba(244,63,94,0.1)]",
     amber: "bg-amber-500/10 text-amber-400 border-amber-500/25 shadow-[0_0_12px_rgba(245,158,11,0.1)]",
@@ -248,37 +250,37 @@ function ResultSheet({
   /* Theme per result kind — strong visual differentiation */
   const theme = {
     success: {
-      sheetBg: "bg-gradient-to-b from-[#092b1a] via-[#05170d] to-[#030a06]",
-      headerBg: "bg-gradient-to-br from-emerald-500/20 to-emerald-600/5",
-      headerBorder: "border-emerald-500/30",
-      headerGlow: "shadow-[inset_0_1px_0_rgba(16,185,129,0.2),0_0_50px_rgba(16,185,129,0.1)]",
-      iconBg: "bg-emerald-500/20 border-emerald-500/40 shadow-[0_0_20px_rgba(16,185,129,0.2)]",
-      iconEl: <CheckCircle2 className="w-10 h-10 text-emerald-400 drop-shadow-[0_0_12px_rgba(16,185,129,0.6)]" />,
-      titleColor: "text-emerald-300",
+      sheetBg: "bg-gradient-to-b from-[#071a12] via-[#060d09] to-[#050a07]",
+      headerBg: "bg-gradient-to-br from-emerald-500/15 to-emerald-600/5",
+      headerBorder: "border-emerald-500/20",
+      headerGlow: "shadow-[inset_0_1px_0_rgba(16,185,129,0.15),0_0_40px_rgba(16,185,129,0.06)]",
+      iconBg: "bg-emerald-500/15 border-emerald-500/30",
+      iconEl: <CheckCircle2 className="w-9 h-9 text-emerald-400 drop-shadow-[0_0_8px_rgba(16,185,129,0.4)]" />,
+      titleColor: "text-emerald-400",
       label: `${(result?.action ?? action)} GRANTED`,
-      accentLine: "bg-gradient-to-r from-transparent via-emerald-400/50 to-transparent",
+      accentLine: "bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent",
     },
     warning: {
-      sheetBg: "bg-gradient-to-b from-[#332200] via-[#1a1100] to-[#0a0600]",
-      headerBg: "bg-gradient-to-br from-amber-500/20 to-amber-600/5",
-      headerBorder: "border-amber-500/30",
-      headerGlow: "shadow-[inset_0_1px_0_rgba(245,158,11,0.2),0_0_50px_rgba(245,158,11,0.1)]",
-      iconBg: "bg-amber-500/20 border-amber-500/40 shadow-[0_0_20px_rgba(245,158,11,0.2)]",
-      iconEl: <AlertTriangle className="w-10 h-10 text-amber-400 drop-shadow-[0_0_12px_rgba(245,158,11,0.6)]" />,
-      titleColor: "text-amber-300",
+      sheetBg: "bg-gradient-to-b from-[#1a1508] via-[#0d0b04] to-[#0a0903]",
+      headerBg: "bg-gradient-to-br from-amber-500/15 to-amber-600/5",
+      headerBorder: "border-amber-500/20",
+      headerGlow: "shadow-[inset_0_1px_0_rgba(245,158,11,0.15),0_0_40px_rgba(245,158,11,0.06)]",
+      iconBg: "bg-amber-500/15 border-amber-500/30",
+      iconEl: <AlertTriangle className="w-9 h-9 text-amber-400 drop-shadow-[0_0_8px_rgba(245,158,11,0.4)]" />,
+      titleColor: "text-amber-400",
       label: "ALREADY SCANNED",
-      accentLine: "bg-gradient-to-r from-transparent via-amber-400/50 to-transparent",
+      accentLine: "bg-gradient-to-r from-transparent via-amber-500/40 to-transparent",
     },
     denied: {
-      sheetBg: "bg-gradient-to-b from-[#330c12] via-[#1a0508] to-[#0a0203]",
-      headerBg: "bg-gradient-to-br from-rose-500/20 to-rose-600/5",
-      headerBorder: "border-rose-500/30",
-      headerGlow: "shadow-[inset_0_1px_0_rgba(244,63,94,0.2),0_0_50px_rgba(244,63,94,0.1)]",
-      iconBg: "bg-rose-500/20 border-rose-500/40 shadow-[0_0_20px_rgba(244,63,94,0.2)]",
-      iconEl: <XCircle className="w-10 h-10 text-rose-400 drop-shadow-[0_0_12px_rgba(244,63,94,0.6)]" />,
-      titleColor: "text-rose-300",
+      sheetBg: "bg-gradient-to-b from-[#1a0808] via-[#0d0505] to-[#0a0404]",
+      headerBg: "bg-gradient-to-br from-rose-500/15 to-rose-600/5",
+      headerBorder: "border-rose-500/20",
+      headerGlow: "shadow-[inset_0_1px_0_rgba(244,63,94,0.15),0_0_40px_rgba(244,63,94,0.06)]",
+      iconBg: "bg-rose-500/15 border-rose-500/30",
+      iconEl: <XCircle className="w-9 h-9 text-rose-400 drop-shadow-[0_0_8px_rgba(244,63,94,0.4)]" />,
+      titleColor: "text-rose-400",
       label: "ACCESS DENIED",
-      accentLine: "bg-gradient-to-r from-transparent via-rose-400/50 to-transparent",
+      accentLine: "bg-gradient-to-r from-transparent via-rose-500/40 to-transparent",
     },
   };
 
@@ -346,7 +348,7 @@ function ResultSheet({
                     {result.user.name}
                   </p>
                   <div className="flex flex-wrap gap-2 mt-2">
-                    <StatusBadge variant="violet">{result.user.anwesha_id}</StatusBadge>
+                    <StatusBadge variant="sage">{result.user.anwesha_id}</StatusBadge>
                     <GateStatusIndicator status={result.gate_status} kind={kind} />
                   </div>
                 </div>
@@ -355,13 +357,13 @@ function ResultSheet({
               {/* Info card */}
               <div className="rounded-2xl bg-white/[0.025] border border-white/[0.06] overflow-hidden px-4 mb-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
                 {result.user.email && (
-                  <InfoRow icon={<Mail size={15} />} label="Email" value={result.user.email} accent="text-violet-400/60" />
+                  <InfoRow icon={<Mail size={15} />} label="Email" value={result.user.email} accent="text-[#86A995]/80" />
                 )}
                 {result.user.college && (
-                  <InfoRow icon={<Building2 size={15} />} label="College" value={result.user.college} accent="text-cyan-400/60" />
+                  <InfoRow icon={<Building2 size={15} />} label="College" value={result.user.college} accent="text-[#86A995]/80" />
                 )}
                 {result.user.phone_number && (
-                  <InfoRow icon={<Phone size={15} />} label="Phone" value={result.user.phone_number} accent="text-indigo-400/60" />
+                  <InfoRow icon={<Phone size={15} />} label="Phone" value={result.user.phone_number} accent="text-[#86A995]/80" />
                 )}
 
                 {/* ID Card — full number */}
@@ -370,14 +372,14 @@ function ResultSheet({
                   label={result.user.id_card_type ?? "Identity Card"}
                   value={(result.user.id_card_number_raw ?? result.user.id_card_number)?.trim() || "Not provided"}
                   mono
-                  accent="text-amber-400/60"
+                  accent="text-[#86A995]"
                 />
 
                 {/* Accommodation */}
                 <InfoRow
                   icon={<Home size={14} />}
                   label="Accommodation"
-                  accent="text-emerald-400/60"
+                  accent="text-emerald-400/80"
                   value={
                     <StatusBadge variant={result.user.has_accommodation ? "emerald" : "default"}>
                       {result.user.has_accommodation ? "✓ Booked" : "✕ Not Booked"}
@@ -389,7 +391,7 @@ function ResultSheet({
                 <InfoRow
                   icon={<Ticket size={14} />}
                   label="Fest Pass"
-                  accent="text-rose-400/60"
+                  accent="text-[#86A995]"
                   value={
                     fp ? (
                       <span className="flex items-center gap-2">
@@ -484,8 +486,27 @@ export default function GateScannerPage() {
   const [cooldown, setCooldown] = useState(false);
   const [lastToken, setLastToken] = useState<string | null>(null);
   const [scanCount, setScanCount] = useState(0);
+  const [gateStats, setGateStats] = useState<any>(null);
   const cooldownRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const dismissRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  const fetchStats = useCallback(async () => {
+    try {
+      const res = await fetch("/api/gate/stats");
+      const data = await res.json();
+      if (data.success && data.gateStats) {
+        setGateStats(data.gateStats);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchStats();
+    const interval = setInterval(fetchStats, 15000); // refresh every 15s
+    return () => clearInterval(interval);
+  }, [fetchStats]);
 
   // Reset cooldown
   useEffect(() => {
@@ -552,6 +573,9 @@ export default function GateScannerPage() {
 
         // No auto-dismiss anymore
         clearTimeout(dismissRef.current);
+        
+        // Refresh stats after a scan
+        fetchStats();
       } catch {
         const errData: ScanResponse = { success: false, message: "Network error — cannot reach server" };
         setResult(errData);
@@ -570,8 +594,7 @@ export default function GateScannerPage() {
   const accentColor = isEntry ? "indigo" : "amber";
 
   return (
-    <div className="relative flex flex-col bg-[#050608] text-white overflow-hidden"
-      style={{ height: "calc(100vh - 0px)", minHeight: "100dvh" }}>
+    <div className="relative flex flex-col bg-[#050608] text-white overflow-hidden h-full w-full min-h-0">
 
       {/* ── Global Styles ─────────────────────────────────────────────── */}
       <style>{`
@@ -606,52 +629,52 @@ export default function GateScannerPage() {
       {/* ── Top Control Bar ───────────────────────────────────────────── */}
       <div className="relative z-10 shrink-0">
         {/* Subtle top accent line */}
-        <div className={`h-[3px] bg-gradient-to-r from-transparent ${isEntry ? "via-indigo-500" : "via-amber-500"} to-transparent shadow-[0_0_15px_currentColor]`} />
+        <div className="h-[2px] bg-gradient-to-r from-transparent via-[#86A995]/60 to-transparent" />
 
-        <div className="flex items-center gap-3 px-4 py-3 bg-gradient-to-b from-[#0f111a]/95 to-[#0a0b12]/95 backdrop-blur-2xl border-b border-white/[0.05] shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
+        <div className="flex items-center gap-2.5 px-3 py-3 bg-[#0c0e12] border-b border-white/[0.08]">
           {/* Gate select */}
           <div className="relative flex-1">
             <select
               id="gate-select"
               value={gate}
               onChange={(e) => setGate(e.target.value as GateType)}
-              className="w-full bg-white/[0.03] border border-white/[0.08] text-white/90 rounded-2xl
-                px-4 py-3.5 text-[14px] font-bold outline-none appearance-none
-                focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/50 cursor-pointer
-                transition-all duration-300 hover:bg-white/[0.06] shadow-inner"
+              className="w-full bg-[#13161c] border border-neutral-800 text-white font-bold rounded-xl
+                px-4 py-2.5 text-xs sm:text-[13px] outline-none appearance-none
+                focus:ring-2 focus:ring-[#86A995]/20 focus:border-[#86A995] cursor-pointer
+                transition-all duration-200 hover:border-neutral-700"
             >
               <option value="MAIN_GATE" className="bg-[#111]">🚪 Main Gate</option>
               <option value="FEST_ARENA" className="bg-[#111]">🎪 Fest Arena</option>
             </select>
-            <ChevronDown size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none" />
+            <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 pointer-events-none" />
           </div>
 
           {/* Entry / Exit toggle */}
-          <div className="flex bg-black/40 border border-white/[0.05] rounded-2xl p-1.5 shrink-0 shadow-inner">
+          <div className="flex bg-[#13161c] border border-neutral-800 rounded-xl p-1 shrink-0">
             <button
               id="mode-entry-btn"
               onClick={() => setAction("ENTRY")}
-              className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-[13px] font-bold tracking-wider
-                transition-all duration-300 ${
+              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-black tracking-wider
+                transition-all duration-200 ${
                   isEntry
-                    ? "bg-gradient-to-r from-indigo-500 to-indigo-600 text-white shadow-[0_0_20px_rgba(99,102,241,0.4)] border border-indigo-400/30"
-                    : "text-white/40 hover:text-white/80 hover:bg-white/[0.05]"
+                    ? "bg-[#86A995] text-[#050f09] shadow-[0_0_15px_rgba(134,169,149,0.3)]"
+                    : "text-neutral-400 hover:text-white"
                 }`}
             >
-              <ArrowDownLeft size={16} />
+              <ArrowDownLeft size={13} className="stroke-[2.5]" />
               ENTRY
             </button>
             <button
               id="mode-exit-btn"
               onClick={() => setAction("EXIT")}
-              className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-[13px] font-bold tracking-wider
-                transition-all duration-300 ${
+              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-black tracking-wider
+                transition-all duration-200 ${
                   !isEntry
-                    ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-[0_0_20px_rgba(245,158,11,0.4)] border border-amber-400/30"
-                    : "text-white/40 hover:text-white/80 hover:bg-white/[0.05]"
+                    ? "bg-[#86A995] text-[#050f09] shadow-[0_0_15px_rgba(134,169,149,0.3)]"
+                    : "text-neutral-400 hover:text-white"
                 }`}
             >
-              <ArrowUpRight size={16} />
+              <ArrowUpRight size={13} className="stroke-[2.5]" />
               EXIT
             </button>
           </div>
@@ -660,17 +683,53 @@ export default function GateScannerPage() {
           <button
             id="log-toggle-btn"
             onClick={() => setShowLog((v) => !v)}
-            className={`shrink-0 p-3.5 rounded-2xl border transition-all duration-300 ${
+            className={`shrink-0 p-2.5 rounded-xl border transition-all duration-200 ${
               showLog
-                ? "bg-indigo-500/20 border-indigo-500/40 text-indigo-300 shadow-[0_0_20px_rgba(99,102,241,0.25)]"
-                : "bg-white/[0.03] border-white/[0.08] text-white/40 hover:text-white/80 hover:bg-white/[0.08]"
+                ? "bg-[#86A995]/15 border-[#86A995]/30 text-[#86A995] shadow-[0_0_12px_rgba(134,169,149,0.15)]"
+                : "bg-[#13161c] border-neutral-800 text-neutral-400 hover:text-white hover:border-neutral-700"
             }`}
             title="Scan log"
           >
-            <Activity size={18} />
+            <Activity size={16} />
           </button>
         </div>
       </div>
+
+      {/* ── Stats Bar (Status Only) ─────────────────────────────────── */}
+      {gateStats && gateStats[gate] && (
+        <div className="relative z-10 shrink-0 flex items-center justify-around px-4 py-2.5 bg-[#08090b]/85 border-b border-white/[0.04]">
+          <div className="flex flex-col items-center">
+            <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Total Entries</span>
+            <span className="text-white text-xs font-mono font-bold mt-0.5">{gateStats[gate].totalEntries}</span>
+          </div>
+
+          <div className="w-px h-6 bg-white/[0.06]" />
+
+          {/* Inside Venue Status */}
+          <div className="flex flex-col items-center">
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_6px_rgba(16,185,129,0.5)]" />
+              <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-widest">
+                Inside
+              </span>
+            </div>
+            <span className="text-emerald-400 text-xs font-mono font-bold mt-0.5">{gateStats[gate].inside}</span>
+          </div>
+
+          <div className="w-px h-6 bg-white/[0.06]" />
+
+          {/* Outside Venue Status */}
+          <div className="flex flex-col items-center">
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_6px_rgba(6,182,212,0.5)]" />
+              <span className="text-[10px] text-cyan-400 font-bold uppercase tracking-widest">
+                Outside
+              </span>
+            </div>
+            <span className="text-cyan-400 text-xs font-mono font-bold mt-0.5">{gateStats[gate].outside}</span>
+          </div>
+        </div>
+      )}
 
       {/* ── Camera Scanner Area ──────────────────────────────────────── */}
       <div className="relative flex-1 overflow-hidden bg-black">
@@ -688,18 +747,10 @@ export default function GateScannerPage() {
           }}
         />
 
-        {/* Sci-fi subtle grid background */}
-        <div className="absolute inset-0 pointer-events-none opacity-20"
-          style={{
-            backgroundImage: "radial-gradient(circle at center, rgba(255,255,255,0.1) 1px, transparent 1px)",
-            backgroundSize: "24px 24px"
-          }}
-        />
-
         {/* Darkened edges vignette */}
         <div className="absolute inset-0 pointer-events-none"
           style={{
-            background: "radial-gradient(ellipse at center, transparent 20%, rgba(0,0,0,0.8) 100%)",
+            background: "radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.6) 100%)",
           }}
         />
 
@@ -718,9 +769,7 @@ export default function GateScannerPage() {
                 className={`absolute w-10 h-10 ${c.pos} ${c.round} ${c.border} ${
                   cooldown
                     ? "border-slate-600/40"
-                    : isEntry
-                    ? "border-indigo-400"
-                    : "border-amber-400"
+                    : "border-[#86A995]"
                 } transition-colors duration-500`}
                 style={{
                   animation: cooldown ? "none" : `cornerPulse 2s ease-in-out ${i * 0.15}s infinite`,
@@ -731,13 +780,9 @@ export default function GateScannerPage() {
             {/* Scan line — sweeping laser */}
             {!cooldown && !isLoading && (
               <div
-                className={`absolute left-2 right-2 h-[2px] rounded-full ${
-                  isEntry
-                    ? "bg-indigo-400/70 shadow-[0_0_12px_rgba(99,102,241,0.5)]"
-                    : "bg-amber-400/70 shadow-[0_0_12px_rgba(245,158,11,0.5)]"
-                }`}
+                className="absolute left-2 right-2 h-[2px] rounded-full bg-[#86A995] shadow-[0_0_15px_#86A995]"
                 style={{
-                  animation: "scanLine 2.5s ease-in-out infinite",
+                  animation: "scanLine 2.2s ease-in-out infinite",
                   top: "0",
                 }}
               />
@@ -746,7 +791,7 @@ export default function GateScannerPage() {
             {/* Center crosshair dot */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
               <div className={`w-2 h-2 rounded-full ${
-                cooldown ? "bg-slate-500/30" : isEntry ? "bg-indigo-400/40" : "bg-amber-400/40"
+                cooldown ? "bg-slate-500/30" : "bg-[#86A995]/60"
               }`} />
             </div>
           </div>
@@ -755,31 +800,29 @@ export default function GateScannerPage() {
         {/* Scanner status pill */}
         <div className="absolute bottom-5 left-0 right-0 flex justify-center pointer-events-none">
           {isLoading ? (
-            <div className="flex items-center gap-2.5 bg-black/80 backdrop-blur-xl px-5 py-2.5 rounded-full border border-indigo-500/20 shadow-[0_0_20px_rgba(99,102,241,0.1)]">
-              <Loader2 size={14} className="animate-spin text-indigo-400" />
-              <span className="text-[12px] font-bold text-indigo-300 tracking-wide">VERIFYING</span>
+            <div className="flex items-center gap-2.5 bg-black/85 backdrop-blur-xl px-5 py-2.5 rounded-full border border-[#86A995]/30 shadow-[0_0_20px_rgba(134,169,149,0.15)]">
+              <Loader2 size={14} className="animate-spin text-[#86A995]" />
+              <span className="text-[12px] font-bold text-[#86A995] tracking-wide">VERIFYING</span>
             </div>
           ) : cooldown ? (
-            <div className="flex items-center gap-2.5 bg-black/80 backdrop-blur-xl px-5 py-2.5 rounded-full border border-white/[0.06]">
+            <div className="flex items-center gap-2.5 bg-black/85 backdrop-blur-xl px-5 py-2.5 rounded-full border border-white/[0.08]">
               <div className="w-2 h-2 rounded-full bg-slate-500 animate-pulse" />
               <span className="text-[12px] font-semibold text-slate-500 tracking-wide">COOLDOWN</span>
             </div>
           ) : (
-            <div className={`flex items-center gap-2.5 bg-black/80 backdrop-blur-xl px-5 py-2.5 rounded-full border ${
-              isEntry ? "border-indigo-500/15" : "border-amber-500/15"
-            }`}>
-              <Scan size={14} className={isEntry ? "text-indigo-400" : "text-amber-400"} style={{ animation: "pulseGlow 2s ease-in-out infinite" }} />
-              <span className="text-[12px] font-bold text-white/70 tracking-wide">
+            <div className="flex items-center gap-2.5 bg-black/85 backdrop-blur-xl px-5 py-2.5 rounded-full border border-white/[0.08] shadow-lg">
+              <Scan size={14} className="text-[#86A995]" style={{ animation: "pulseGlow 2s ease-in-out infinite" }} />
+              <span className="text-[12px] font-bold text-white/80 tracking-wide">
                 {gateLabel(gate)}
               </span>
               <span className="text-slate-600">•</span>
-              <span className={`text-[12px] font-bold tracking-wide ${isEntry ? "text-indigo-400" : "text-amber-400"}`}>
+              <span className="text-[12px] font-black tracking-wider text-[#86A995]">
                 {action}
               </span>
               {scanCount > 0 && (
                 <>
                   <span className="text-slate-600">•</span>
-                  <span className="text-[11px] font-mono text-slate-500">{scanCount}</span>
+                  <span className="text-[11px] font-mono text-slate-400 font-bold">{scanCount}</span>
                 </>
               )}
             </div>
