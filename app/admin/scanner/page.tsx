@@ -55,10 +55,26 @@ interface UserInfo {
   id_card_number?: string;
   id_card_number_raw?: string;
   id_card_type?: string;
+  aadhar_number?: string | null;
+  college_id_number?: string | null;
+  id_card_status?: string | null;
   has_accommodation?: boolean;
   phone_number?: string;
   gender?: string;
 }
+
+const formatAadhaar = (value?: string | null): string | null => {
+  const trimmed = value?.trim();
+  if (!trimmed) return null;
+  const digits = trimmed.replace(/D/g, "");
+  return digits.length === 12 ? digits.replace(/(d{4})(?=d)/g, "$1 ") : trimmed;
+};
+
+const aadhaarFor = (user: UserInfo): string | null =>
+  formatAadhaar(
+    user.aadhar_number ??
+      (user.id_card_type?.toUpperCase().startsWith("AADHA") ? user.id_card_number_raw ?? user.id_card_number : null)
+  );
 
 interface ScanResponse {
   success: boolean;
@@ -366,14 +382,31 @@ function ResultSheet({
                   <InfoRow icon={<Phone size={15} />} label="Phone" value={result.user.phone_number} accent="text-[#86A995]/80" />
                 )}
 
-                {/* ID Card — full number */}
                 <InfoRow
                   icon={<Fingerprint size={15} />}
-                  label={result.user.id_card_type ?? "Identity Card"}
-                  value={(result.user.id_card_number_raw ?? result.user.id_card_number)?.trim() || "Not provided"}
+                  label="Aadhaar No."
+                  value={aadhaarFor(result.user) || "Not provided"}
                   mono
                   accent="text-[#86A995]"
                 />
+                {result.user.college_id_number && (
+                  <InfoRow
+                    icon={<Fingerprint size={15} />}
+                    label="College ID"
+                    value={result.user.college_id_number}
+                    mono
+                    accent="text-[#86A995]/80"
+                  />
+                )}
+                {!aadhaarFor(result.user) && result.user.id_card_number_raw && (
+                  <InfoRow
+                    icon={<Fingerprint size={15} />}
+                    label={result.user.id_card_type ?? "Identity Card"}
+                    value={result.user.id_card_number_raw}
+                    mono
+                    accent="text-[#86A995]/80"
+                  />
+                )}
 
                 {/* Accommodation */}
                 <InfoRow

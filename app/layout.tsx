@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+﻿import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
@@ -12,6 +12,9 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Anwesha 2027 — Volunteer Portal",
   description: "Secure gate scanning and entry management for Anwesha 2027 volunteers.",
+};
+
+export const viewport: Viewport = {
   themeColor: "#000000",
 };
 

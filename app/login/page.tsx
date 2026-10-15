@@ -69,7 +69,7 @@ function LoginContent() {
           alt="IIT Patna Central Library"
           fill
           priority
-          sizes="100vw"
+          sizes="(min-width: 1024px) 1px, 100vw"
           className="object-cover object-center"
         />
         {/* Pure black scrim overlay: dark and legible without hiding the library building */}
